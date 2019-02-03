@@ -1,0 +1,121 @@
+<div class="container" data-ng-controller="newOrderCtrl as octrl">
+    <div class="block-header">
+        <h2>New Order</h2>
+
+        <ul class="actions">
+            <li>
+                <a href="">
+                    <i class="zmdi zmdi-trending-up"></i>
+                </a>
+            </li>
+            <li>
+                <a href="">
+                    <i class="zmdi zmdi-check-all"></i>
+                </a>
+            </li>
+            <li class="dropdown" uib-dropdown>
+                <a href="" uib-dropdown-toggle>
+                    <i class="zmdi zmdi-more-vert"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li>
+                        <a href="">Refresh</a>
+                    </li>
+                    <li>
+                        <a href="">Manage Widgets</a>
+                    </li>
+                    <li>
+                        <a href="">Widgets Settings</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>{{translat('New Order Form')}}
+    </small></h2>
+        </div>
+
+        <div class="card-body card-padding">
+            <form role="form">
+                <div class="form-group fg-line">
+                    <!--label>{{translate('Source Address')}}</label-->
+                    <input id="autocomplete" placeholder="Enter Source address"
+                           ng-change="geolocate('source')" ng-model="addressQuery" type="text">
+                </div>
+                <div class="form-group fg-line">
+                    <!--label>{{translate('Destination Address')}}</label-->
+                    <input id="autocomplete1" placeholder="Enter Destination address"
+                           ng-change="geolocate('destination')" ng-model="addressQuery1" type="text">
+                </div>
+                <div class="form-group fg-line">
+                    <label >{{translate('Type Of Goods')}}</label>
+                    <input ng-model="order.goods_type" type="text" class="form-control input-sm"
+                           placeholder="Enter type of goods">
+                </div>
+                <div class="form-group fg-line">
+                    <label>{{translate('Work type')}}:</label>
+                    <br>
+                    <button class="btn bgm-lightblue waves-effect" ng-click="show_pallets=!show_pallets">
+                        {{translate('Pallets')}}</button>
+                    <button class="btn bgm-deeporange waves-effect" ng-click="show_bulk=!show_bulk">Bulk</button>
+                    <button class="btn bgm-indigo waves-effect" ng-click="show_other=!show_other">Other</button>
+                </div>
+                <div class="form-group fg-line" ng-show="show_pallets">
+                    <label >Amount of pallets</label>
+                    <input ng-model="order.work_type.pallet.amount" type="number" class="form-control input-sm"
+                           placeholder="Enter Amount of pallets">
+                </div>
+                <div class="form-group fg-line" ng-show="show_pallets">
+                    <label >Weight Per Pallet</label>
+                    <input ng-model="order.work_type.pallet.weight" type="number" class="form-control input-sm"
+                           placeholder="Enter Weight of each pallet">
+                </div>
+                <div class="form-group fg-line" ng-show="show_bulk">
+                    <label >Total Weight Of Bulk</label>
+                    <input ng-model="order.work_type.bulk.weight" type="number" class="form-control input-sm"
+                           placeholder="Enter Total weight of bulk">
+                </div>
+                <div class="checkbox"  ng-show="show_bulk">
+                    <label>Continuous Work  </label>
+                    <input type="checkbox"  ng-model="order.work_type.bulk.continuous">
+                    <i class="input-helper"></i>
+                </div>
+                <div class="form-group fg-line" ng-show="order.work_type.bulk.continuous">
+                    <label>Weight Per Hour</label>
+                    <input ng-model="order.tons_per_hour" type="number" class="form-control input-sm"
+                           placeholder="Tons Per Hour">
+                </div>
+                <div class="form-group fg-line">
+                    <label >Transport Type</label>
+                    <input ng-model="order.transport_type" type="text" class="form-control input-sm"
+                           placeholder="Transport Type">
+                </div>
+                <div class="form-group fg-line">
+                    <label >Start Date </label>
+                    <input ng-model="order.start_date" type="date" class="form-control input-sm"
+                           placeholder="Start Date">
+                </div>
+                <div class="form-group fg-line">
+                    <label >End Date </label>
+                    <input ng-model="order.end_date" type="date" class="form-control input-sm"
+                           placeholder="End Date">
+                </div>
+
+                <div class="form-group fg-line">
+                    <label >Transport Type</label>
+                    <input ng-model="order.deal_type" type="text" class="form-control input-sm"
+                           placeholder="Deal Type">
+                </div>
+
+                <button ng-click="submit_order()" type="submit" class="btn btn-primary btn-sm m-t-10">Submit</button>
+            </form>
+        </div>
+    </div>
+
+
+
+</div>

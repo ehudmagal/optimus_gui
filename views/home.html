@@ -1,0 +1,105 @@
+<header id="header-2" data-current-skin="{{mactrl.currentSkin}}" data-ng-include src="'template/header.html'"
+        data-ng-controller="headerCtrl as hctrl"></header>
+<aside id="sidebar" data-ng-include="'template/sidebar-left.html'"
+       data-ng-class="{ 'toggled': mactrl.sidebarToggle.left === true }"></aside>
+
+<style>
+
+
+    #map {
+        height: 110% !important;
+        position: absolute !important;
+        width: 100% !important;
+    }
+
+    #over_map {
+        position: absolute;
+        top: 20%;
+        right: 10px;
+        z-index: 99;
+    }
+</style>
+<div data-ng-controller="tableCtrl as tctrl">
+
+
+    <div class="container" id="orders_table">
+
+        <div class="block-header">
+
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Orders</h2>
+                <br>
+                <button id="show_map_button" ng-click="mapView()" class="btn btn-default btn-icon-text waves-effect">
+                    <i class="zmdi zmdi-map zmdi-hc-fw"></i> Map
+                </button>
+            </div>
+            <div class="card-body">
+                <uib-accordion close-others="true">
+                    <div uib-accordion-group ng-repeat="order in orders" class="panel-default" heading="{{order.id}}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Carrier Email</th>
+                                <th>Source</th>
+                                <th>Destination</th>
+                                <th>
+                                    Bids
+                                </th>
+                                <th ng-show="user.type == 'Driver'">Place Bid</th>
+                                <th ng-show="user.type == 'Driver'">Bid Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{order.user.email}}</td>
+                                <td>{{order.source.address}}</td>
+                                <td>{{order.destination.address}}</td>
+                                <td >
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Price</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="bid in order.bids | bidsByUser: user">
+                                            <td>
+                                                {{bid.user.name}}
+                                            </td>
+                                            <td>
+                                                {{bid.price}}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td ng-show="user.type == 'Driver'">
+                                    <button ng-click="place_bid(order)" class="btn bgm-indigo waves-effect">Place Bid</button>
+                                </td>
+                                <td ng-show="user.type == 'Driver'">
+                                    <input type="number" step="10" ng-model="order.current_bid_price" placeholder="Bid Price">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </uib-accordion>
+
+            </div>
+
+        </div>
+
+    </div>
+    <section id="map" style="overflow: hidden;overflow-y: hidden;"></section>
+    <div id="over_map">
+        <button id="show_list_button" ng-click="listView()" class="btn btn-default btn-icon-text waves-effect">
+            <i class="zmdi zmdi-format-list-bulleted zmdi-hc-fw"></i> List
+        </button>
+
+    </div>
+</div>
+

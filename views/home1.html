@@ -1,0 +1,456 @@
+<header style="{{getDirection()}}" id="header" data-current-skin="blue" data-ng-include
+        src="'template/header.html'"
+        data-ng-controller="headerCtrl as hctrl"></header>
+<aside style="{{getDirection()}}" id="sidebar" data-ng-include="'template/sidebar-left.html'"
+       data-ng-class="{ 'toggled': mactrl.sidebarToggle.left === true }"></aside>
+
+<style>
+
+    .paging_span {
+        background-color: rgb(255, 255, 255);
+        border-bottom-color: rgb(221, 221, 221);
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-image-outset: 0 0 0 0;
+        border-image-repeat: stretch stretch;
+        border-image-slice: 100% 100% 100% 100%;
+        border-image-source: none;
+        border-image-width: 1 1 1 1;
+        border-left-color: rgb(221, 221, 221);
+        border-left-style: solid;
+        border-left-width: 1px;
+        border-right-color: rgb(221, 221, 221);
+        border-right-style: solid;
+        border-right-width: 1px;
+        border-top-color: rgb(221, 221, 221);
+        border-top-style: solid;
+        border-top-width: 1px;
+        box-sizing: border-box;
+        color: rgb(66, 139, 202);
+        floatleftfont-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 20px;
+        list-style-image: none;
+        list-style-position: outside;
+        list-style-type: none;
+        margin-left: -1px;
+        padding-bottom: 6px;
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top: 6px;
+        position: relative;
+        text-decoration: none;
+        text-decoration-color: rgb(66, 139, 202);
+        text-decoration-line: none;
+        text-decoration-style: solid;
+        text-rendering: optimizelegibility;
+        -moz-border-bottom-colors: none;
+        -moz-border-left-colors: none;
+        -moz-border-right-colors: none;
+        -moz-border-top-colors: none;
+    }
+
+    #map {
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .over_map {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 20%;
+        z-index: 2;
+    }
+
+    .invisible_button {
+        float: left;
+        top: 0;
+        left: 0;
+        position: absolute;
+        background-color: #2196F3;
+        border-color: transparent;
+    }
+
+    .paginationclass {
+
+        margin: 19px 28px;
+    }
+
+    .paginationclass span {
+        margin-left: 15px;
+        display: inline-block;
+    }
+
+    .pagination-controle li {
+        display: inline-block;
+    }
+
+    .pagination-controle button {
+        font-size: 12px;
+        margin-top: -26px;
+        cursor: pointer;
+
+    }
+
+    .pagination {
+        margin: 5px 12px !important;
+    }
+    #credit_dialog {
+        min-width: 524px;
+    }
+</style>
+<div style="{{getDirection()}}" data-ng-controller="tableCtrl as tctrl">
+
+    <section id="map">
+    </section>
+    <div class="row" style="display:none" id="credit_dialog">
+        <div id="dropin-container"></div>
+        <button id="submit-button">Request payment method</button>
+        <script>
+
+        </script>
+    </div>
+    <div class="row" style="display:none" id="order_dialog">
+        <div class="col-sm-12">
+            <div class="card">
+
+                <div class="card-header ch-alt"
+                     style="background-color: #2196F3;">
+                    <button class="invisible_button"
+                            ng-click="close_order_dialog()">
+                        <i class="zmdi zmdi-close-circle-o zmdi-hc-fw"></i>
+                    </button>
+                    <h2 style="color: white;">{{translate('Order Details')}} {{order_to_show.id}}</h2>
+                </div>
+                <div class="card-body card-padding">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <form>
+                                <div class="form-group">
+                                    <div class="fg-line">
+                                        <label>{{translate('Pickup Location')}}</label>
+                                        <input class="form-control input-lg"
+                                               ng-model="order_to_show.source.address"
+                                               ng-disabled="true"
+                                               type="text">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="fg-line">
+                                        <label>{{translate('Drop Off Location')}}</label>
+                                        <input class="form-control input-lg"
+                                               ng-model="order_to_show.destination.address"
+                                               ng-disabled="true"
+                                               type="text">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="fg-line">
+                                        <label>{{translate('Status')}}</label>
+                                        <input class="form-control input-lg"
+                                               ng-model="order_to_show.status"
+                                               ng-disabled="true"
+                                               type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group"
+                                     ng-show="user.type =='Driver'">
+                                    <div class="fg-line">
+                                        <label>{{translate('Place Bid')}}</label>
+                                        <input class="form-control input-lg"
+                                               ng-model="order_to_show.current_bid_price"
+                                               type="number">
+                                    </div>
+                                    <button class="btn bgm-indigo waves-effect"
+                                            class="form-control input-lg"
+                                            ng-model="bid_price"
+                                            ng-click="place_bid(order_to_show)">
+                                        {{translate('Place Bid')}}
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn bgm-indigo waves-effect"
+                                            class="form-control input-lg"
+                                            ng-show="user.type=='Customer'">
+                                        {{translate('Follow Shipment')}}
+                                    </button>
+
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn bgm-red waves-effect"
+                                            class="form-control input-lg"
+                                            ng-show="user.type=='Customer'"
+                                            ng-click="confirm_cancel(order_to_show)">
+                                        {{translate('Cancel Order')}}
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="col-xs-6">
+                            <form>
+
+
+                                <div class="form-group">
+                                    <div class="fg-line">
+                                        <label>{{translate('Total Weight In Kg')}}</label>
+                                        <input ng-model="order_to_show.weight"
+                                               class="form-control input-lg"
+                                               ng-disabled="true"
+                                               type="text">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="fg-line">
+                                        <label>{{translate('Distance in KM')}}</label>
+                                        <input class="form-control input-lg"
+                                               ng-model="order_to_show.distance"
+                                               ng-disabled="true"
+                                               type="text">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card over_map" ng-show="user.type">
+        <div class="listview lv-bordered lv-lg">
+            <div class="lv-header-alt clearfix">
+                <h2 class="lvh-label hidden-xs">My Orders</h2>
+
+                <!-- ngIf: mactrl.listviewSearchStat -->
+
+
+            </div>
+
+            <div class="card-body" style="{{getDirection()}}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Order Number')}}
+                            <input type="text" name="order number"
+                                   class="input-filter"
+                                   placeholder="SEARCH ID"
+                                   ng-change="searchOrdersOnMap(orders)"
+                                   ng-model="order_id">
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Description')}}
+                            <input type="text" name="description"
+                                   class="input-filter"
+                                   placeholder="DESCRIPTION"
+                                   ng-change="searchOrdersOnMap(orders)"
+                                   ng-model="order_description">
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Pickup Location')}}
+                            <input type="text" name="source address"
+                                   class="input-filter"
+                                   placeholder="Source Address"
+                                   ng-change="searchOrdersOnMap(orders)"
+                                   ng-model="source_address">
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Pickup Time')}}
+                            <input class="input-filter"
+                                   type="date"
+                                   ng-model="pickup_time"
+                                   ng-change="searchOrdersOnMap(orders)"
+                                   placeholder="Pickup Day">
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Drop Off Location')}}
+                            <input type="text" name="destination address"
+                                   class="input-filter"
+                                   placeholder="Destination Address"
+                                   ng-change="searchOrdersOnMap(orders)"
+                                   ng-model="destination_address">
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Drop Off Time')}}
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Lowest Price')}}
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Status')}}
+                            <select ng-model="status_query"
+                                    ng-init="status_query=''"
+                                    ng-options="value as name for (name,value) in ORDER_STATUSES"
+                                    ng-change="searchOrdersOnMap(orders)"
+                                    required
+                            ></select>
+                        </th>
+                        <th style="{{getTextDirection()}}">
+                            {{translate('Details')}}
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat-start="order in orders |orderBy:'-id' |
+                        searchAnything:status_query:['status'] |
+                        searchAnything:order_id:['id'] |
+                        searchAnything:order_description:['description'] |
+                        searchAnything:source_address:['source.address'] |
+                        searchAnything:destination_address:['destination.address'] |
+                        searchDate: pickup_time: 'pickup_time':DaysBetweenFactory |pagination: curPage * pageSize | limitTo: pageSize">
+                        <td data-ng-click="order.expended = !order.expended">
+                            {{order.id}}
+                        </td>
+                        <td data-ng-click="order_clicked(order)">
+                            {{order.description}}
+                        </td>
+                        <td data-ng-click="order_clicked(order)">
+                            {{order.source.address}}
+                        </td>
+                        <td data-ng-click="order_clicked(order)">
+                            {{GetDateStringFactory.getDateString(order.pickup_time)}}
+                        </td>
+                        <td data-ng-click="order_clicked(order)">
+                            {{order.destination.address}}
+                        </td>
+                        <td data-ng-click="order_clicked(order)">
+                            {{GetDateStringFactory.getDateString(order.delivery_time)}}
+                        </td>
+                        <td data-ng-click="order_clicked(order)">
+                            {{order_lowest_price(order)}}
+                        </td>
+                        <td>
+                            <button class="{{getOrderClass(order)}}" style="min-width: 57px;"
+                                    ng-click="show_dialog(order,'order_dialog')">
+                                {{translate(order.status)}}
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn bgm-indigo waves-effect"
+                                    ng-click="show_dialog(order,'order_dialog')">
+                                {{translate('Show Order Details')}}
+                            </button>
+                        </td>
+                    </tr>
+                    <tr ng-if="order.expended" ng-repeat-end="">
+                        <td colspan="4">
+                            <div class="card">
+                                <div class="card-header">
+                                    {{translate('Bids')}}
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>{{translate('User')}}</th>
+                                            <th>{{translate('Rating')}}</th>
+                                            <th>{{translate('Price')}}</th>
+                                            <th>
+                                                {{translate('Times Worked With Him')}}
+                                            </th>
+                                            <th>
+                                                {{translate('Status')}}
+                                            </th>
+                                            <th>
+                                                {{translate('Cancel')}}
+                                            </th>
+                                            <th>
+                                                {{translate('Accept')}}
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="bid in order.bids | bidsByUser: user"
+                                            bgcolor="{{BidColorService.color(bid)}}"
+                                            style="{{BidFontStyleService.style(bid)}}">
+                                            <td>
+                                                {{bid.user.name}}
+                                            </td>
+                                            <td>
+                                                100
+                                            </td>
+                                            <td>
+                                                {{bid.price}}
+                                            </td>
+                                            <td>
+                                                {{bid.times_user_worked_with}}
+                                            </td>
+                                            <td>
+                                                {{get_bid_status(bid)}}
+                                            </td>
+                                            <td>
+                                                <button class="btn bgm-indigo waves-effect"
+                                                        ng-click="cancel_bid(bid)"
+                                                        ng-show="show_bid_cancel(bid)">
+                                                    {{translate('Cancel Bid')}}
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button class="btn bgm-indigo waves-effect"
+                                                        ng-click="accept_bid(bid,order)"
+                                                        ng-show="show_bid_accept(bid)">
+                                                    {{translate('Accept')}}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="pagination pagination-centered"
+                     ng-show="orders.length">
+                    <table>
+                        <tr>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        ng-disabled="curPage == 0"
+                                        ng-click="curPage=curPage-1"> {{translate('PREV')}}
+                                </button>
+                            </td>
+                            <td>
+                                    <span class="paging_span">
+                                        Page {{curPage + 1}} of {{ numberOfPages() }}
+                                    </span>
+                            </td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        ng-disabled="curPage >= orders.length/pageSize - 1"
+                                        ng-click="curPage = curPage+1">{{translate('NEXT')}}
+                                </button>
+                            </td>
+                            <td>
+
+                                {{translate('Page Size')}}:
+                                <select ng-model="pageSize"
+                                        ng-options="opt as opt for opt in page_sizes">
+                                </select>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
