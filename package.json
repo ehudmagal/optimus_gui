@@ -1,5 +1,5 @@
 {
-  "name": "superflat-admin",
+  "name": "optimus-gui",
   "version": "0.1.0",
   "devDependencies": {
     "grunt": "~0.4.5",
@@ -10,10 +10,15 @@
     "grunt-contrib-uglify": "^0.8.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-csssplit": "^0.4.0",
-    "grunt-npm-install": "^0.3.0"
+    "grunt-karma": "^3.0.1",
+    "grunt-npm-install": "^0.3.1"
   },
   "dependencies": {
     "angular-animate": "^1.4.3",
-    "ng-if-bootstrap-grid": "^0.1.0"
+    "express": "^4.16.4",
+    "ng-if-bootstrap-grid": "^0.1.0",
+    "express":"*",
+    "body-parser":"*",
+    "bcrypt": "^0.8.5"
   }
 }
