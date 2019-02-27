@@ -450,7 +450,7 @@ materialAdmin
         this.forgot = 0;
         $scope.user = {};
         $scope.login_user = function () {
-            var url = '/users/sign_in.json';
+            var url = SERVER_STRING + '/users/sign_in.json';
             var post_data = {};
             var user_for_post = jQuery.extend(true, {}, $scope.user);
             user_for_post.remember_me = 0;
@@ -473,7 +473,7 @@ materialAdmin
         $scope.types = ['Customer', 'Driver'];
         $scope.user = {};
         $scope.sign_up_user = function () {
-            var url = '/users.json';
+            var url = SERVER_STRING+'/users.json';
             var post_data = {};
             var user_for_post = jQuery.extend(true, {}, $scope.user);
             post_data['user'] = user_for_post;
@@ -509,7 +509,7 @@ materialAdmin
 
     .controller('calendarCtrl', function ($modal) {
 
-        //Create and add Action button with dropdown in Calendar header. 
+        //Create and add Action button with dropdown in Calendar header.
         this.month = 'month';
 
         this.actionMenu = '<ul class="actions actions-alt" id="fc-actions">' +
@@ -605,7 +605,7 @@ materialAdmin
             }
         }
 
-        //Dismiss 
+        //Dismiss
         $scope.eventDismiss = function () {
             $modalInstance.dismiss();
         }
@@ -758,7 +758,7 @@ materialAdmin
             {animation: 'zoomOutUp', target: 'zoomExits'}
         ]
 
-        //Animate    
+        //Animate
         this.ca = '';
 
         this.setAnimation = function (animation, target) {
@@ -777,4 +777,3 @@ materialAdmin
         }
 
     })
-

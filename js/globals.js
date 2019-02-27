@@ -16,4 +16,4 @@ ORDER_STATUSES = {booked: 'booked',
 
 //SERVER_STRING="https://www.optimus.ninja/"
 
-SERVER_STRING="https://optimus-production.herokuapp.com/"
+SERVER_STRING="https://optimus-production-pr-11.herokuapp.com/"
